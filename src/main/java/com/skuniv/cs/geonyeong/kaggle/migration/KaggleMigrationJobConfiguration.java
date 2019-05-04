@@ -111,7 +111,6 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
         reader.setLineMapper(new LineMapper<Question>() {
             @Override
             public Question mapLine(String line, int lineNumber) throws Exception {
-                log.info("question line => {}", line);
                 String[] questionSplit = line.split(HIVE_DELEMETER_FIRST, -1);
                 String[] commentSplit = questionSplit[19].split(HIVE_DELEMETER_SECOND, -1);
                 String[] linkSplit = questionSplit[20].split(HIVE_DELEMETER_SECOND, -1);
