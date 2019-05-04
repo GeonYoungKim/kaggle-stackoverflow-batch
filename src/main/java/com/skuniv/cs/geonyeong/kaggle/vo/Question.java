@@ -3,10 +3,12 @@ package com.skuniv.cs.geonyeong.kaggle.vo;
 import com.skuniv.cs.geonyeong.kaggle.vo.meta.QnAMeta;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class Question extends QnAMeta {
     private String id;
     private String title;

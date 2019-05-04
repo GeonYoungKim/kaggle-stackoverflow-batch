@@ -3,8 +3,10 @@ package com.skuniv.cs.geonyeong.kaggle.vo;
 import com.skuniv.cs.geonyeong.kaggle.vo.meta.PostMeta;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class Comment extends PostMeta {
     private String commentId;
     private String postId;
