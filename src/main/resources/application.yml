@@ -1,0 +1,16 @@
+spring:
+  batch:
+    job:
+      enabled: false
+  main:
+    web-application-type: none
+com:
+  skuniv:
+    cs:
+      geonyeong:
+        kaggle:
+          es:
+            host: dev-geon-test001-ncl.nfra.io
+            port: 9200
+            type: _doc
+            index: stackoverflow
