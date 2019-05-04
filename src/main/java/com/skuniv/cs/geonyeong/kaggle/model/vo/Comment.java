@@ -8,11 +8,11 @@ import java.util.Date;
 @Data
 @Builder
 public class Comment {
-    private Integer commentId;
+    private String commentId;
     private String text;
     private String createDate;
-    private Integer postId;
-    private Integer userId;
+    private String postId;
+    private String userId;
     private String userDisplayName;
     private Integer score;
     private String userAboutMe;

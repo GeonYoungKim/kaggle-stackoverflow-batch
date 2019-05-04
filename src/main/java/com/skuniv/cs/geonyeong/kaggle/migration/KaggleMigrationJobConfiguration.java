@@ -117,7 +117,7 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                 List<Comment> commentList = createCommentList(commentSplit);
                 List<Link> linkList = createLinkList(linkSplit);
                 Question question = Question.builder()
-                        .questionId(Integer.valueOf(questionSplit[0]))
+                        .questionId(questionSplit[0])
                         .title(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[1]) ? "" : questionSplit[1])
                         .body(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[2]) ? "" : questionSplit[2])
                         .answerCount(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[3]) ? 0 : Integer.valueOf(questionSplit[3]))
@@ -125,7 +125,7 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                         .createDate(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[5]) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(questionSplit[5]))
                         .favoriteCount(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[6]) ? 0 : Integer.valueOf(questionSplit[6]))
                         .ownerDisplayName(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[7]) ? "" : questionSplit[7])
-                        .ownerUserId(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[8]) ? 0 : Integer.valueOf(questionSplit[8]))
+                        .ownerUserId(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[8]) ? "" : questionSplit[8])
                         .score(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[9]) ? 0 : Integer.valueOf(questionSplit[9]))
                         .tags(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[10]) ? "" : questionSplit[10])
                         .viewCount(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[11]) ? 0 : Integer.valueOf(questionSplit[11]))
@@ -158,13 +158,13 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                 List<Comment> commentList = createCommentList(commentSplit);
                 List<Link> linkList = createLinkList(linkSplit);
                 Answer answer = Answer.builder()
-                        .answerId(Integer.valueOf(answerSplit[0]))
+                        .answerId(answerSplit[0])
                         .body(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[1]) ? "" : answerSplit[1])
                         .commentCount(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[2]) ? 0 : Integer.valueOf(answerSplit[2]))
                         .createDate(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[3]) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(answerSplit[3]))
                         .ownerDisplayName(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[4]) ? "" : answerSplit[4])
-                        .ownerUserId(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[5]) ? 0 : Integer.valueOf(answerSplit[5]))
-                        .parentId(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[6]) ? 0 : Integer.valueOf(answerSplit[6]))
+                        .ownerUserId(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[5]) ? "" : answerSplit[5])
+                        .parentId(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[6]) ? "" : answerSplit[6])
                         .score(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[7]) ? 0 : Integer.valueOf(answerSplit[7]))
                         .tags(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[8]) ? "" : answerSplit[8])
                         .userAboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[9]) ? "" : answerSplit[9])
@@ -179,7 +179,7 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                         .qnaJoin(
                                 QnaJoin.builder()
                                         .name(ANSWER_JOIN_NAME)
-                                        .parent(Integer.valueOf(answerSplit[6]))
+                                        .parent(answerSplit[6])
                                         .build()
                         )
                         .build();
@@ -246,9 +246,9 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                 .map(item -> {
                     String[] linkDetailSplit = item.split("`", -1);
                     return Link.builder()
-                            .linkId(Integer.valueOf(linkDetailSplit[0]))
-                            .postId(Integer.valueOf(linkDetailSplit[1]))
-                            .relatedPostId(Integer.valueOf(linkDetailSplit[2]))
+                            .linkId(linkDetailSplit[0])
+                            .postId(linkDetailSplit[1])
+                            .relatedPostId(linkDetailSplit[2])
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -263,11 +263,11 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                     Comment comment = null;
                     try {
                         comment = Comment.builder()
-                                .commentId(Integer.valueOf(commentDetailSplit[0]))
+                                .commentId(commentDetailSplit[0])
                                 .text(commentDetailSplit[1])
                                 .createDate(TimeUtil.toStr(commentDetailSplit[2]))
-                                .postId(Integer.valueOf(commentDetailSplit[3]))
-                                .userId(Integer.valueOf(commentDetailSplit[4]))
+                                .postId(commentDetailSplit[3])
+                                .userId(commentDetailSplit[4])
                                 .userDisplayName(commentDetailSplit[5])
                                 .score(Integer.valueOf(commentDetailSplit[6]))
                                 .userAboutMe(commentDetailSplit[7])

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 public class Question {
-    private Integer questionId;
+    private String questionId;
     private String title;
     private String body;
     private Integer answerCount;
@@ -17,7 +17,7 @@ public class Question {
     private String createDate;
     private Integer favoriteCount;
     private String ownerDisplayName;
-    private Integer ownerUserId;
+    private String ownerUserId;
     private Integer score;
     private String tags;
     private Integer viewCount;

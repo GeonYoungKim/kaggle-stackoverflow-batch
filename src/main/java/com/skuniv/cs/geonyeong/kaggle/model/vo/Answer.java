@@ -11,13 +11,13 @@ import java.util.List;
 @Data
 @Builder
 public class Answer {
-    private Integer answerId;
+    private String answerId;
     private String body;
     private Integer commentCount;
     private String createDate;
     private String ownerDisplayName;
-    private Integer ownerUserId;
-    private Integer parentId;
+    private String ownerUserId;
+    private String parentId;
     private Integer score;
     private String tags;
     private String userAboutMe;

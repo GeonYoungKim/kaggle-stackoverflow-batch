@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class QnaJoin {
     private String name;
-    private Integer parent;
+    private String parent;
 }

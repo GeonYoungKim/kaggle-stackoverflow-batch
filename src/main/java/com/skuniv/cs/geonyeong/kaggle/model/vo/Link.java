@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class Link {
-    private Integer linkId;
-    private Integer postId;
-    private Integer relatedPostId;
+    private String linkId;
+    private String postId;
+    private String relatedPostId;
 }
