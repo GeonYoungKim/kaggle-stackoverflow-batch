@@ -2,8 +2,8 @@ package com.skuniv.cs.geonyeong.kaggle.migration;
 
 import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggle.configuration.EsConfiguration;
-import com.skuniv.cs.geonyeong.kaggle.model.vo.*;
 import com.skuniv.cs.geonyeong.kaggle.utils.TimeUtil;
+import com.skuniv.cs.geonyeong.kaggle.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -116,26 +116,29 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                 String[] linkSplit = questionSplit[20].split(HIVE_DELEMETER_SECOND, -1);
                 List<Comment> commentList = createCommentList(commentSplit);
                 List<Link> linkList = createLinkList(linkSplit);
+                Account account = createAccount(
+                        questionSplit[8], // id
+                        questionSplit[7], // name
+                        questionSplit[12], // aboutme
+                        questionSplit[13], // age
+                        questionSplit[14], // createDate
+                        questionSplit[15], // upvotes
+                        questionSplit[16], // downvotes
+                        questionSplit[17], // profileImageUrl
+                        questionSplit[18] // websiteUrl
+                );
                 Question question = Question.builder()
-                        .questionId(questionSplit[0])
+                        .id(questionSplit[0])
                         .title(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[1]) ? "" : questionSplit[1])
                         .body(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[2]) ? "" : questionSplit[2])
                         .answerCount(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[3]) ? 0 : Integer.valueOf(questionSplit[3]))
                         .commentCount(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[4]) ? 0 : Integer.valueOf(questionSplit[4]))
                         .createDate(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[5]) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(questionSplit[5]))
                         .favoriteCount(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[6]) ? 0 : Integer.valueOf(questionSplit[6]))
-                        .ownerDisplayName(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[7]) ? "" : questionSplit[7])
-                        .ownerUserId(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[8]) ? "" : questionSplit[8])
                         .score(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[9]) ? 0 : Integer.valueOf(questionSplit[9]))
                         .tags(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[10]) ? "" : questionSplit[10])
                         .viewCount(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[11]) ? 0 : Integer.valueOf(questionSplit[11]))
-                        .userAboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[12]) ? "" : questionSplit[12])
-                        .userAge(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[13]) ? "" : questionSplit[13])
-                        .userCreateDate(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[14]) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(questionSplit[14]))
-                        .userUpVotes(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[15]) ? 0 : Integer.valueOf(questionSplit[15]))
-                        .userDownVotes(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[16]) ? 0 : Integer.valueOf(questionSplit[16]))
-                        .userProfileImageUrl(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[17]) ? "" : questionSplit[17])
-                        .userWebsiteUrl(StringUtils.equals(EMPTY_FIELD_VALUE, questionSplit[18]) ? "" : questionSplit[18])
+                        .account(account)
                         .commentList(commentList)
                         .linkList(linkList)
                         .qnaJoin(QnaJoin.builder().name(QUESTION_JOIN_NAME).build())
@@ -157,23 +160,26 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                 String[] linkSplit = answerSplit[17].split(HIVE_DELEMETER_SECOND, -1);
                 List<Comment> commentList = createCommentList(commentSplit);
                 List<Link> linkList = createLinkList(linkSplit);
+                Account account = createAccount(
+                        answerSplit[5], // id
+                        answerSplit[4], // anme
+                        answerSplit[9], // aboutMe
+                        answerSplit[10], // age
+                        answerSplit[11], // createDate
+                        answerSplit[12], // upvotes
+                        answerSplit[13], // downvotes
+                        answerSplit[14], // profileImageUrl
+                        answerSplit[15] // websiteUrl
+                );
                 Answer answer = Answer.builder()
-                        .answerId(answerSplit[0])
+                        .id(answerSplit[0])
                         .body(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[1]) ? "" : answerSplit[1])
                         .commentCount(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[2]) ? 0 : Integer.valueOf(answerSplit[2]))
                         .createDate(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[3]) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(answerSplit[3]))
-                        .ownerDisplayName(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[4]) ? "" : answerSplit[4])
-                        .ownerUserId(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[5]) ? "" : answerSplit[5])
                         .parentId(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[6]) ? "" : answerSplit[6])
                         .score(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[7]) ? 0 : Integer.valueOf(answerSplit[7]))
                         .tags(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[8]) ? "" : answerSplit[8])
-                        .userAboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[9]) ? "" : answerSplit[9])
-                        .userAge(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[10]) ? "" : answerSplit[10])
-                        .userCreateDate(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[11]) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(answerSplit[11]))
-                        .userUpVotes(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[12]) ? 0 : Integer.valueOf(answerSplit[12]))
-                        .userDownVotes(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[13]) ? 0 : Integer.valueOf(answerSplit[13]))
-                        .userProfileImageUrl(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[14]) ? "" : answerSplit[14])
-                        .userWebsiteUrl(StringUtils.equals(EMPTY_FIELD_VALUE, answerSplit[15]) ? "" : answerSplit[15])
+                        .account(account)
                         .commentList(commentList)
                         .linkList(linkList)
                         .qnaJoin(
@@ -200,7 +206,7 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                                     new IndexRequest(indexName)
                                             .source(gson.toJson(item), XContentType.JSON)
                                             .type(esType)
-                                            .id(String.valueOf(item.getAnswerId()))
+                                            .id(String.valueOf(item.getId()))
                                             .routing(String.valueOf(item.getParentId()))
                             );
                         }
@@ -226,8 +232,8 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                                     new IndexRequest(indexName)
                                             .source(gson.toJson(item), XContentType.JSON)
                                             .type(esType)
-                                            .id(String.valueOf(item.getQuestionId()))
-                                            .routing(String.valueOf(item.getQuestionId()))
+                                            .id(String.valueOf(item.getId()))
+                                            .routing(String.valueOf(item.getId()))
                             );
                         }
                 );
@@ -262,21 +268,24 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
                     String[] commentDetailSplit = item.split("`", -1);
                     Comment comment = null;
                     try {
+                        Account account = createAccount(
+                                commentDetailSplit[4], // id
+                                commentDetailSplit[5], // name
+                                commentDetailSplit[7], // aboutMe
+                                commentDetailSplit[8], // age
+                                commentDetailSplit[9], // createDate
+                                commentDetailSplit[10], // upvotes
+                                commentDetailSplit[11], // downvotes
+                                commentDetailSplit[12], // profileImageUrl
+                                commentDetailSplit[13] // websiteUrl
+                        );
                         comment = Comment.builder()
                                 .commentId(commentDetailSplit[0])
-                                .text(commentDetailSplit[1])
+                                .body(commentDetailSplit[1])
                                 .createDate(TimeUtil.toStr(commentDetailSplit[2]))
                                 .postId(commentDetailSplit[3])
-                                .userId(commentDetailSplit[4])
-                                .userDisplayName(commentDetailSplit[5])
                                 .score(Integer.valueOf(commentDetailSplit[6]))
-                                .userAboutMe(commentDetailSplit[7])
-                                .userAge(commentDetailSplit[8])
-                                .userCreateDate(TimeUtil.toStr(commentDetailSplit[9]))
-                                .userUpvotes(Integer.valueOf(commentDetailSplit[10]))
-                                .userDownVotes(Integer.valueOf(commentDetailSplit[11]))
-                                .userProfileImageUrl(commentDetailSplit[12])
-                                .userWebsiteUrl(commentDetailSplit[13])
+                                .account(account)
                                 .build();
                     } catch (ParseException e) {
                         log.error("date parse exception => {}", e);
@@ -297,5 +306,20 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
         MultiResourceItemReader<String> multiResourceItemReader = new MultiResourceItemReader<String>();
         multiResourceItemReader.setResources(resources);
         return multiResourceItemReader;
+    }
+
+    private Account createAccount(String id, String name, String aboutMe, String age, String createDate, String upVotes, String downVotes, String profileImageUrl, String websiteUrl) throws ParseException {
+        return Account.builder()
+                .id(StringUtils.equals(EMPTY_FIELD_VALUE, id) ? "" : id)
+                .displayName(StringUtils.equals(EMPTY_FIELD_VALUE, name) ? "" : name)
+                .aboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, aboutMe) ? "" : aboutMe)
+                .age(StringUtils.equals(EMPTY_FIELD_VALUE, age) ? "" : age)
+                .createDate(StringUtils.equals(EMPTY_FIELD_VALUE, createDate) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(createDate))
+                .upvotes(StringUtils.equals(EMPTY_FIELD_VALUE, upVotes) ? 0 : Integer.valueOf(upVotes))
+                .downVotes(StringUtils.equals(EMPTY_FIELD_VALUE, downVotes) ? 0 : Integer.valueOf(downVotes))
+                .profileImageUrl(StringUtils.equals(EMPTY_FIELD_VALUE, profileImageUrl) ? "" : profileImageUrl)
+                .websiteUrl(StringUtils.equals(EMPTY_FIELD_VALUE, websiteUrl) ? "" : websiteUrl)
+                .build()
+                ;
     }
 }

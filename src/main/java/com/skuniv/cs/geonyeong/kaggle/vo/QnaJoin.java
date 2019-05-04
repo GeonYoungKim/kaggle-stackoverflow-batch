@@ -1,4 +1,4 @@
-package com.skuniv.cs.geonyeong.kaggle.model.vo;
+package com.skuniv.cs.geonyeong.kaggle.vo;
 
 import lombok.Builder;
 import lombok.Data;
