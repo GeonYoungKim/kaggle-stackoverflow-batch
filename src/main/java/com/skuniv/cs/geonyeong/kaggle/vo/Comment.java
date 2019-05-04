@@ -10,13 +10,11 @@ import lombok.EqualsAndHashCode;
 public class Comment extends PostMeta {
     private String commentId;
     private String postId;
-    private Account account;
 
     @Builder
-    public Comment(String body, String createDate, Integer score, Account account, String commentId, String postId, Account account1) {
+    public Comment(String body, String createDate, Integer score, Account account, String commentId, String postId) {
         super(body, createDate, score, account);
         this.commentId = commentId;
         this.postId = postId;
-        this.account = account1;
     }
 }
