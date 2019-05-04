@@ -57,6 +57,8 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
     private final String ANSWER_JOIN_NAME = "answer";
     private final String QUESTION_JOIN_NAME = "question";
     private final String EMPTY_FIELD_VALUE = "None";
+    private final String HIVE_DELEMETER_FIRST = "\001";
+    private final String HIVE_DELEMETER_SECOND = "\002";
 
     @Bean
     public Job kaggleMigrationJob() {
@@ -110,9 +112,9 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
             @Override
             public Question mapLine(String line, int lineNumber) throws Exception {
                 log.info("question line => {}", line);
-                String[] questionSplit = line.split("\\^A", -1);
-                String[] commentSplit = questionSplit[19].split("\\^B", -1);
-                String[] linkSplit = questionSplit[20].split("\\^B", -1);
+                String[] questionSplit = line.split(HIVE_DELEMETER_FIRST, -1);
+                String[] commentSplit = questionSplit[19].split(HIVE_DELEMETER_SECOND, -1);
+                String[] linkSplit = questionSplit[20].split(HIVE_DELEMETER_SECOND, -1);
                 List<Comment> commentList = createCommentList(commentSplit);
                 List<Link> linkList = createLinkList(linkSplit);
                 Question question = Question.builder()
@@ -151,9 +153,9 @@ public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
         reader.setLineMapper(new LineMapper<Answer>() {
             @Override
             public Answer mapLine(String line, int lineNumber) throws Exception {
-                String[] answerSplit = line.split("\\^A", -1);
-                String[] commentSplit = answerSplit[16].split("\\^B", -1);
-                String[] linkSplit = answerSplit[17].split("\\^B", -1);
+                String[] answerSplit = line.split(HIVE_DELEMETER_FIRST, -1);
+                String[] commentSplit = answerSplit[16].split(HIVE_DELEMETER_SECOND, -1);
+                String[] linkSplit = answerSplit[17].split(HIVE_DELEMETER_SECOND, -1);
                 List<Comment> commentList = createCommentList(commentSplit);
                 List<Link> linkList = createLinkList(linkSplit);
                 Answer answer = Answer.builder()
