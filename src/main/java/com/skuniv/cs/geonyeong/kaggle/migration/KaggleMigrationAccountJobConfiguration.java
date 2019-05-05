@@ -56,7 +56,7 @@ public class KaggleMigrationAccountJobConfiguration {
     private final RestHighLevelClient restHighLevelClient;
 
     private final Integer CHUNCK_SIZE = 200;
-    private final String HIVE_DELEMETER_FIRST = "\001";
+    private final String DELEMETER = "`";
     private final String EMPTY_FIELD_VALUE = "None";
 
     @Bean
@@ -105,7 +105,7 @@ public class KaggleMigrationAccountJobConfiguration {
         reader.setLineMapper(new LineMapper<Account>() {
             @Override
             public Account mapLine(String line, int lineNumber) throws Exception {
-                String[] accountSplit = line.split(HIVE_DELEMETER_FIRST, -1);
+                String[] accountSplit = line.split(DELEMETER, -1);
                 Account account = Account.builder()
                         .id(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[0]) ? "" : accountSplit[0])
                         .displayName(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[1]) ? "" : accountSplit[1])
