@@ -40,10 +40,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @EnableBatchProcessing
 @Import({EsConfiguration.class})
-public class KaggleMigrationJobConfiguration extends DefaultBatchConfigurer {
+public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer {
     private final static Gson gson = new Gson();
 
-    @Value("${com.skuniv.cs.geonyeong.kaggle.es.index}")
+    @Value("${com.skuniv.cs.geonyeong.kaggle.es.index.post}")
     private String esIndexName;
 
     @Value("${com.skuniv.cs.geonyeong.kaggle.es.type}")
