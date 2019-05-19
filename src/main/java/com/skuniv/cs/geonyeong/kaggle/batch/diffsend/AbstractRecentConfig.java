@@ -21,15 +21,15 @@ public abstract class AbstractRecentConfig {
 
     protected AvroAccount createAvroAccount(String id, String name, String aboutMe, String age, String createDate, String upVotes, String downVotes, String profileImageUrl, String websiteUrl) throws ParseException {
         return AvroAccount.newBuilder()
-                .setId(id)
-                .setDisplayName(name)
-                .setAboutMe(aboutMe)
-                .setAge(age)
+                .setId(StringUtils.equals(EMPTY_FIELD_VALUE, id) ? "" : id)
+                .setDisplayName(StringUtils.equals(EMPTY_FIELD_VALUE, name) ? "" : name)
+                .setAboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, aboutMe) ? "" : aboutMe)
+                .setAge(StringUtils.equals(EMPTY_FIELD_VALUE, age) ? "" : age)
                 .setCreateDate(StringUtils.equals(EMPTY_FIELD_VALUE, createDate) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(createDate))
-                .setUpvotes(Integer.valueOf(upVotes))
-                .setDownVotes(Integer.valueOf(downVotes))
-                .setProfileImageUrl(profileImageUrl)
-                .setWebsiteUrl(websiteUrl)
+                .setUpvotes(StringUtils.equals(EMPTY_FIELD_VALUE, upVotes) ? 0 : Integer.valueOf(upVotes))
+                .setDownVotes(StringUtils.equals(EMPTY_FIELD_VALUE, downVotes) ? 0 : Integer.valueOf(downVotes))
+                .setProfileImageUrl(StringUtils.equals(EMPTY_FIELD_VALUE, profileImageUrl) ? "" : profileImageUrl)
+                .setWebsiteUrl(StringUtils.equals(EMPTY_FIELD_VALUE, websiteUrl) ? "" : websiteUrl)
                 .build()
                 ;
     }
@@ -53,11 +53,11 @@ public abstract class AbstractRecentConfig {
                                 commentDetailSplit[13] // websiteUrl
                         );
                         avroComment = AvroComment.newBuilder()
-                                .setCommentId(commentDetailSplit[0])
-                                .setBody(commentDetailSplit[1])
-                                .setCreateDate(TimeUtil.toStr(commentDetailSplit[2]))
-                                .setPostId(commentDetailSplit[3])
-                                .setScore(Integer.valueOf(commentDetailSplit[6]))
+                                .setCommentId(StringUtils.equals(EMPTY_FIELD_VALUE, commentDetailSplit[0]) ? "" : commentDetailSplit[0])
+                                .setBody(StringUtils.equals(EMPTY_FIELD_VALUE, commentDetailSplit[1]) ? "" : commentDetailSplit[1])
+                                .setCreateDate(StringUtils.equals(EMPTY_FIELD_VALUE, commentDetailSplit[2]) ? TimeUtil.toStr(new Date()) : TimeUtil.toStr(commentDetailSplit[2]))
+                                .setPostId(StringUtils.equals(EMPTY_FIELD_VALUE, commentDetailSplit[3]) ? "" : commentDetailSplit[3])
+                                .setScore(StringUtils.equals(EMPTY_FIELD_VALUE, commentDetailSplit[6]) ? 0 : Integer.valueOf(commentDetailSplit[6]))
                                 .setAccount(avroAccount)
                                 .build();
                     } catch (ParseException e) {
@@ -74,9 +74,9 @@ public abstract class AbstractRecentConfig {
                 .map(item -> {
                     String[] linkDetailSplit = item.split(DETAIL_SPLIT_DELEMETER, -1);
                     return AvroLink.newBuilder()
-                            .setLinkId(linkDetailSplit[0])
-                            .setPostId(linkDetailSplit[1])
-                            .setRelatedPostId(linkDetailSplit[2])
+                            .setLinkId(StringUtils.equals(EMPTY_FIELD_VALUE, linkDetailSplit[0]) ? "" : linkDetailSplit[0])
+                            .setPostId(StringUtils.equals(EMPTY_FIELD_VALUE, linkDetailSplit[1]) ? "" : linkDetailSplit[1])
+                            .setRelatedPostId(StringUtils.equals(EMPTY_FIELD_VALUE, linkDetailSplit[2]) ? "" : linkDetailSplit[2])
                             .build();
                 })
                 .collect(Collectors.toList());
