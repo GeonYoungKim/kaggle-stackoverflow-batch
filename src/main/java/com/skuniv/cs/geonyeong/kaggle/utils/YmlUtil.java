@@ -17,7 +17,6 @@ import java.util.Properties;
 @Slf4j
 public class YmlUtil {
 
-
     public static Properties getYmlProps() throws ConfigurationException {
         YAMLConfiguration yamlConfiguration = getYamlConfig("application.yml");
         Properties properties = ConfigurationConverter.getProperties(yamlConfiguration);

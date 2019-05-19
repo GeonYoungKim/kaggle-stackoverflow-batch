@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.skuniv.cs.geonyeong.kaggle.constant.KaggleBatchConstant.CHUNCK_SIZE;
-import static com.skuniv.cs.geonyeong.kaggle.utils.BatchUtil.HIVE_DELEMETER_FIRST;
-import static com.skuniv.cs.geonyeong.kaggle.utils.BatchUtil.HIVE_DELEMETER_SECOND;
+import static com.skuniv.cs.geonyeong.kaggle.constant.KaggleBatchConstant.HIVE_DELEMETER_FIRST;
+import static com.skuniv.cs.geonyeong.kaggle.constant.KaggleBatchConstant.HIVE_DELEMETER_SECOND;
 
 @Slf4j
 @Configuration

@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -27,7 +26,7 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 
 import static com.skuniv.cs.geonyeong.kaggle.constant.KaggleBatchConstant.CHUNCK_SIZE;
-import static com.skuniv.cs.geonyeong.kaggle.utils.BatchUtil.HIVE_DELEMETER_FIRST;
+import static com.skuniv.cs.geonyeong.kaggle.constant.KaggleBatchConstant.HIVE_DELEMETER_FIRST;
 
 @Slf4j
 @Configuration
@@ -41,7 +40,7 @@ public class AccountRecentSendJobConfiguration extends AbstractRecentConfig {
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job accountRecentSendJob() throws ConfigurationException {
+    public Job accountRecentSendJob() {
         return jobBuilderFactory.get("accountRecentSendJob")
                 .start(accountRecentSendStep())
                 .build()
@@ -49,11 +48,26 @@ public class AccountRecentSendJobConfiguration extends AbstractRecentConfig {
     }
 
     @Bean
-    public Step accountRecentSendStep() throws ConfigurationException {
+    public Step accountRecentSendStep() {
         return stepBuilderFactory.get("accountRecentSendStep")
                 .<AvroAccount, AvroAccount>chunk(CHUNCK_SIZE)
                 .reader(multiResourceAccountRecentItemReader(null))
                 .writer(itemAccountRecentWriter())
+                .listener(new StepExecutionListener() {
+                    @Override
+                    public void beforeStep(StepExecution stepExecution) {
+                        try {
+                            kafkaProducer = KafkaProducerFactoryUtil.createKafkaProducer();
+                        } catch (ConfigurationException e) {
+                            log.info("KAFKA PRODUCER CREATE ERROR => {}", e);
+                        }
+                    }
+
+                    @Override
+                    public ExitStatus afterStep(StepExecution stepExecution) {
+                        return null;
+                    }
+                })
                 .build()
                 ;
     }
@@ -90,8 +104,7 @@ public class AccountRecentSendJobConfiguration extends AbstractRecentConfig {
     }
 
     @Bean
-    public ItemWriter<AvroAccount> itemAccountRecentWriter() throws ConfigurationException {
-        kafkaProducer = KafkaProducerFactoryUtil.createKafkaProducer();
+    public ItemWriter<AvroAccount> itemAccountRecentWriter() {
         ItemWriter<AvroAccount> itemWriter = new ItemWriter<AvroAccount>() {
             @Override
             public void write(List<? extends AvroAccount> items) throws Exception {

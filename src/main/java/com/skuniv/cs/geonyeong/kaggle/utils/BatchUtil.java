@@ -10,8 +10,6 @@ import java.io.IOException;
 
 @Slf4j
 public class BatchUtil {
-    public static final String HIVE_DELEMETER_FIRST = "\001";
-    public static final String HIVE_DELEMETER_SECOND = "\002";
 
     public static MultiResourceItemReader createMultiResourceItemReader(String path) {
         ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();

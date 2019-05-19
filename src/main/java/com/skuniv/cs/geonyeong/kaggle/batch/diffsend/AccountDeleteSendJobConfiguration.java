@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -40,7 +39,7 @@ public class AccountDeleteSendJobConfiguration {
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job accountDeleteSendJob() throws ConfigurationException {
+    public Job accountDeleteSendJob() {
         return jobBuilderFactory.get("accountDeleteSendJob")
                 .start(accountDeleteSendStep())
                 .build()
@@ -48,11 +47,26 @@ public class AccountDeleteSendJobConfiguration {
     }
 
     @Bean
-    public Step accountDeleteSendStep() throws ConfigurationException {
+    public Step accountDeleteSendStep() {
         return stepBuilderFactory.get("accountDeleteSendStep")
                 .<AvroAccount, AvroAccount>chunk(CHUNCK_SIZE)
                 .reader(multiResourceAccountDeleteItemReader(null))
                 .writer(itemAccountDeleteWriter())
+                .listener(new StepExecutionListener() {
+                    @Override
+                    public void beforeStep(StepExecution stepExecution) {
+                        try {
+                            kafkaProducer = KafkaProducerFactoryUtil.createKafkaProducer();
+                        } catch (ConfigurationException e) {
+                            log.info("KAFKA PRODUCER CREATE ERROR => {}", e);
+                        }
+                    }
+
+                    @Override
+                    public ExitStatus afterStep(StepExecution stepExecution) {
+                        return null;
+                    }
+                })
                 .build()
                 ;
     }
@@ -78,8 +92,7 @@ public class AccountDeleteSendJobConfiguration {
     }
 
     @Bean
-    public ItemWriter<AvroAccount> itemAccountDeleteWriter() throws ConfigurationException {
-        kafkaProducer = KafkaProducerFactoryUtil.createKafkaProducer();
+    public ItemWriter<AvroAccount> itemAccountDeleteWriter() {
         ItemWriter<AvroAccount> itemWriter = new ItemWriter<AvroAccount>() {
             @Override
             public void write(List<? extends AvroAccount> items) throws Exception {

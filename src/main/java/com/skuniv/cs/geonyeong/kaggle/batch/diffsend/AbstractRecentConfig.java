@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-public  abstract class AbstractRecentConfig {
+public abstract class AbstractRecentConfig {
+
+    private final String DETAIL_SPLIT_DELEMETER = "`";
     protected final String EMPTY_FIELD_VALUE = "None";
 
     protected AvroAccount createAvroAccount(String id, String name, String aboutMe, String age, String createDate, String upVotes, String downVotes, String profileImageUrl, String websiteUrl) throws ParseException {
@@ -36,7 +38,7 @@ public  abstract class AbstractRecentConfig {
         return Arrays.stream(avroCommentSplit)
                 .filter(StringUtils::isNotBlank)
                 .map(item -> {
-                    String[] commentDetailSplit = item.split("`", -1);
+                    String[] commentDetailSplit = item.split(DETAIL_SPLIT_DELEMETER, -1);
                     AvroComment avroComment = null;
                     try {
                         AvroAccount avroAccount = createAvroAccount(
@@ -55,7 +57,7 @@ public  abstract class AbstractRecentConfig {
                                 .setBody(commentDetailSplit[1])
                                 .setCreateDate(TimeUtil.toStr(commentDetailSplit[2]))
                                 .setPostId(commentDetailSplit[3])
-                                .setScore(Integer.valueOf(commentDetailSplit[7]))
+                                .setScore(Integer.valueOf(commentDetailSplit[6]))
                                 .setAccount(avroAccount)
                                 .build();
                     } catch (ParseException e) {
@@ -70,7 +72,7 @@ public  abstract class AbstractRecentConfig {
         return Arrays.stream(avroLinkSplit)
                 .filter(StringUtils::isNotBlank)
                 .map(item -> {
-                    String[] linkDetailSplit = item.split("`", -1);
+                    String[] linkDetailSplit = item.split(DETAIL_SPLIT_DELEMETER, -1);
                     return AvroLink.newBuilder()
                             .setLinkId(linkDetailSplit[0])
                             .setPostId(linkDetailSplit[1])

@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -40,7 +39,7 @@ public class AnswerDeleteSendJobConfiguration {
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job answerDeleteSendJob() throws ConfigurationException {
+    public Job answerDeleteSendJob() {
         return jobBuilderFactory.get("answerDeleteSendJob")
                 .start(answerDeleteSendStep())
                 .build()
@@ -48,11 +47,26 @@ public class AnswerDeleteSendJobConfiguration {
     }
 
     @Bean
-    public Step answerDeleteSendStep() throws ConfigurationException {
+    public Step answerDeleteSendStep() {
         return stepBuilderFactory.get("answerDeleteSendStep")
                 .<AvroAnswer, AvroAnswer>chunk(CHUNCK_SIZE)
                 .reader(multiResourceAnswerDeleteItemReader(null))
                 .writer(itemAnswerDeleteWriter())
+                .listener(new StepExecutionListener() {
+                    @Override
+                    public void beforeStep(StepExecution stepExecution) {
+                        try {
+                            kafkaProducer = KafkaProducerFactoryUtil.createKafkaProducer();
+                        } catch (ConfigurationException e) {
+                            log.info("KAFKA PRODUCER CREATE ERROR => {}", e);
+                        }
+                    }
+
+                    @Override
+                    public ExitStatus afterStep(StepExecution stepExecution) {
+                        return null;
+                    }
+                })
                 .build()
                 ;
     }
@@ -79,8 +93,7 @@ public class AnswerDeleteSendJobConfiguration {
     }
 
     @Bean
-    public ItemWriter<AvroAnswer> itemAnswerDeleteWriter() throws ConfigurationException {
-        kafkaProducer = KafkaProducerFactoryUtil.createKafkaProducer();
+    public ItemWriter<AvroAnswer> itemAnswerDeleteWriter() {
         ItemWriter<AvroAnswer> itemWriter = new ItemWriter<AvroAnswer>() {
             @Override
             public void write(List<? extends AvroAnswer> items) throws Exception {
