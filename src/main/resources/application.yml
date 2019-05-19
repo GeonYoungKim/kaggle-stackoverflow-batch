@@ -9,6 +9,11 @@ com:
     cs:
       geonyeong:
         kaggle:
+          kafka:
+            bootstrapServers: dev-geon-test001-ncl.nfra.io:9092,dev-geon-test002-ncl.nfra.io:9092,dev-geon-test003-ncl.nfra.io:9092,dev-geon-test004-ncl.nfra.io:9092,dev-geon-test005-ncl.nfra.io:9092
+          schema:
+            registry:
+              url: http://dev-geon-test003-ncl.nfra.io:8081
           es:
             host: dev-geon-test001-ncl.nfra.io
             port: 9200

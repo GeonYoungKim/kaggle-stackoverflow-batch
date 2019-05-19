@@ -1,0 +1,169 @@
+[
+    {
+        "namespace": "com.skuniv.cs.geonyeong.kaggle.vo.avro",
+        "type" : "record",
+        "name" : "AvroAccount",
+        "fields" : [
+            {
+                "name" : "id",
+                "type" : "string",
+                "default" : ""
+             },
+            {
+                "name" : "displayName",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "aboutMe",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "age",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "createDate",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "upvotes",
+                "type" : "int",
+                "default" : 0
+            },
+            {
+                "name" : "downVotes",
+                "type" : "int",
+                "default" : 0
+            },
+            {
+                "name" : "profileImageUrl",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "websiteUrl",
+                "type" : "string",
+                "default" : ""
+            }
+        ]
+    },
+    {
+        "namespace": "com.skuniv.cs.geonyeong.kaggle.vo.avro",
+        "type" : "record",
+        "name" : "AvroQnaJoin",
+        "fields" : [
+            {
+                "name" : "name",
+                "type" : "string",
+                "default" : ""
+             },
+            {
+                "name" : "parent",
+                "type" : "string",
+                "default" : ""
+            }
+        ]
+    },
+    {
+        "namespace": "com.skuniv.cs.geonyeong.kaggle.vo.avro",
+        "type" : "record",
+        "name" : "AvroQuestion",
+        "fields" : [
+            {
+                "name" : "id",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "title",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "answerCount",
+                "type" : "int",
+                "default" : 0
+            },
+            {
+                "name" : "favoriteCount",
+                "type" : "int",
+                "default" : 0
+            },
+            {
+                "name" : "viewCount",
+                "type" : "int",
+                "default" : 0
+            },
+            {
+                "name" : "commentCount",
+                "type" : "int",
+                "default" : 0
+            },
+            {
+                "name" : "tags",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "body",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "createDate",
+                "type" : "string",
+                "default" : ""
+            },
+            {
+                "name" : "score",
+                "type" : "int",
+                "default" : 0
+            },
+            {
+                "name" : "account",
+                "type" : "AvroAccount"
+            },
+            {
+                "name" : "commentList",
+                "type" : {
+                    "type": "array",
+                    "items":{
+                        "name":"AvroComment",
+                        "type":"record",
+                        "fields":[
+                            {"name":"commentId", "type":"string", "default" : ""},
+                            {"name":"postId", "type":"string", "default" : ""},
+                            {"name":"body", "type":"string", "default" : ""},
+                            {"name":"createDate", "type":"string", "default" : ""},
+                            {"name":"score", "type":"int", "default" : 0},
+                            {"name":"account", "type":"AvroAccount"}
+                        ]
+                    }
+                }
+            },
+            {
+                "name" : "linkList",
+                "type" : {
+                    "type": "array",
+                    "items":{
+                        "name":"AvroLink",
+                        "type":"record",
+                        "fields":[
+                            {"name":"linkId", "type":"string", "default" : ""},
+                            {"name":"postId", "type":"string", "default" : ""},
+                            {"name":"relatedPostId", "type":"string", "default" : ""}
+                        ]
+                    }
+                }
+            },
+            {
+                "name" : "qnaJoin",
+                "type" : "AvroQnaJoin"
+            }
+        ]
+    }
+]

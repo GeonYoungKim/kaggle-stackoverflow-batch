@@ -1,8 +1,9 @@
-package com.skuniv.cs.geonyeong.kaggle.migration;
+package com.skuniv.cs.geonyeong.kaggle.batch.migration;
 
 
 import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggle.configuration.EsConfiguration;
+import com.skuniv.cs.geonyeong.kaggle.utils.BatchUtil;
 import com.skuniv.cs.geonyeong.kaggle.utils.TimeUtil;
 import com.skuniv.cs.geonyeong.kaggle.vo.Account;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +37,12 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import static com.skuniv.cs.geonyeong.kaggle.constant.KaggleBatchConstant.CHUNCK_SIZE;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 @EnableBatchProcessing
-@Import({EsConfiguration.class})
 public class KaggleMigrationAccountJobConfiguration {
 
     private final static Gson gson = new Gson();
@@ -55,7 +57,6 @@ public class KaggleMigrationAccountJobConfiguration {
     private final StepBuilderFactory stepBuilderFactory;
     private final RestHighLevelClient restHighLevelClient;
 
-    private final Integer CHUNCK_SIZE = 200;
     private final String DELEMETER = "`";
     private final String EMPTY_FIELD_VALUE = "None";
 
@@ -80,24 +81,10 @@ public class KaggleMigrationAccountJobConfiguration {
     @Bean
     @StepScope
     public MultiResourceItemReader<Account> multiResourceAccountItemReader(@Value("#{jobParameters[accountPath]}") String accountPath) {
-        MultiResourceItemReader<Account> multiResourceItemReader = createMultiResourceItemReader(accountPath);
+        MultiResourceItemReader<Account> multiResourceItemReader = BatchUtil.createMultiResourceItemReader(accountPath);
         multiResourceItemReader.setDelegate(accountReader());
         return multiResourceItemReader;
     }
-
-    private MultiResourceItemReader createMultiResourceItemReader(String filePath) {
-        ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
-        Resource[] resources = null;
-        try {
-            resources = patternResolver.getResources("file:" + filePath);
-        } catch (IOException e) {
-            log.error("resources get error");
-        }
-        MultiResourceItemReader<String> multiResourceItemReader = new MultiResourceItemReader<String>();
-        multiResourceItemReader.setResources(resources);
-        return multiResourceItemReader;
-    }
-
 
     @Bean
     public FlatFileItemReader<Account> accountReader() {

@@ -1,7 +1,9 @@
-package com.skuniv.cs.geonyeong.kaggle.migration;
+package com.skuniv.cs.geonyeong.kaggle.batch.migration;
 
 import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggle.configuration.EsConfiguration;
+import com.skuniv.cs.geonyeong.kaggle.enums.PostType;
+import com.skuniv.cs.geonyeong.kaggle.utils.BatchUtil;
 import com.skuniv.cs.geonyeong.kaggle.utils.TimeUtil;
 import com.skuniv.cs.geonyeong.kaggle.vo.*;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +37,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.skuniv.cs.geonyeong.kaggle.constant.KaggleBatchConstant.CHUNCK_SIZE;
+import static com.skuniv.cs.geonyeong.kaggle.utils.BatchUtil.HIVE_DELEMETER_FIRST;
+import static com.skuniv.cs.geonyeong.kaggle.utils.BatchUtil.HIVE_DELEMETER_SECOND;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 @EnableBatchProcessing
-@Import({EsConfiguration.class})
 public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer {
     private final static Gson gson = new Gson();
 
@@ -53,12 +58,7 @@ public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer 
     private final StepBuilderFactory stepBuilderFactory;
     private final RestHighLevelClient restHighLevelClient;
 
-    private final Integer CHUNCK_SIZE = 200;
-    private final String ANSWER_JOIN_NAME = "answer";
-    private final String QUESTION_JOIN_NAME = "question";
     private final String EMPTY_FIELD_VALUE = "None";
-    private final String HIVE_DELEMETER_FIRST = "\001";
-    private final String HIVE_DELEMETER_SECOND = "\002";
 
     @Bean
     public Job kaggleMigrationJob() {
@@ -92,7 +92,7 @@ public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer 
     @Bean
     @StepScope
     public MultiResourceItemReader<Answer> multiResourceAnswerItemReader(@Value("#{jobParameters[answerPath]}") String answerPath) {
-        MultiResourceItemReader<Answer> multiResourceItemReader = createMultiResourceItemReader(answerPath);
+        MultiResourceItemReader<Answer> multiResourceItemReader = BatchUtil.createMultiResourceItemReader(answerPath);
         multiResourceItemReader.setDelegate(answerReader());
         return multiResourceItemReader;
     }
@@ -100,7 +100,7 @@ public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer 
     @Bean
     @StepScope
     public MultiResourceItemReader<Question> multiResourceQuestionItemReader(@Value("#{jobParameters[questionPath]}") String questionPath) {
-        MultiResourceItemReader<Question> multiResourceItemReader = createMultiResourceItemReader(questionPath);
+        MultiResourceItemReader<Question> multiResourceItemReader = BatchUtil.createMultiResourceItemReader(questionPath);
         multiResourceItemReader.setDelegate(questionReader());
         return multiResourceItemReader;
     }
@@ -141,7 +141,7 @@ public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer 
                         .account(account)
                         .commentList(commentList)
                         .linkList(linkList)
-                        .qnaJoin(QnaJoin.builder().name(QUESTION_JOIN_NAME).build())
+                        .qnaJoin(QnaJoin.builder().name(PostType.QUESTION.getType()).build())
                         .build();
                 return question;
             }
@@ -184,7 +184,7 @@ public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer 
                         .linkList(linkList)
                         .qnaJoin(
                                 QnaJoin.builder()
-                                        .name(ANSWER_JOIN_NAME)
+                                        .name(PostType.ANSWER.getType())
                                         .parent(answerSplit[6])
                                         .build()
                         )
@@ -293,19 +293,6 @@ public class KaggleMigrationPostJobConfiguration extends DefaultBatchConfigurer 
                     return comment;
                 })
                 .collect(Collectors.toList());
-    }
-
-    private MultiResourceItemReader createMultiResourceItemReader(String filePath) {
-        ResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
-        Resource[] resources = null;
-        try {
-            resources = patternResolver.getResources("file:" + filePath);
-        } catch (IOException e) {
-            log.error("resources get error");
-        }
-        MultiResourceItemReader<String> multiResourceItemReader = new MultiResourceItemReader<String>();
-        multiResourceItemReader.setResources(resources);
-        return multiResourceItemReader;
     }
 
     private Account createAccount(String id, String name, String aboutMe, String age, String createDate, String upVotes, String downVotes, String profileImageUrl, String websiteUrl) throws ParseException {

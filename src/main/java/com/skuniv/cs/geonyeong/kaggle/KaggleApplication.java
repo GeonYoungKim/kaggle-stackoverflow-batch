@@ -44,7 +44,7 @@ public class KaggleApplication implements ApplicationRunner {
             if(Optional.ofNullable(param).isPresent()) {
                 String[] paramSplit = param.get(0).split("&", -1);
                 Arrays.stream(paramSplit).forEach(item -> {
-                    String[] pair = item.split(":");
+                    String[] pair = item.split("=");
                     log.info("pair key => {} / value => {}", pair[0], pair[1]);
                     builder.addString(pair[0], pair[1]);
                 });
