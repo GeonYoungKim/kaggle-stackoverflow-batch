@@ -1,12 +1,11 @@
 package com.skuniv.cs.geonyeong.kaggle.utils;
 
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
-
-import java.io.IOException;
 
 @Slf4j
 public class BatchUtil {

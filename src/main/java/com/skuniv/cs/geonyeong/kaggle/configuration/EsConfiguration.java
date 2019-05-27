@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 public class EsConfiguration {
+
     @Value("${com.skuniv.cs.geonyeong.kaggle.es.host}")
     private String host;
 
@@ -19,8 +20,6 @@ public class EsConfiguration {
 
     @Bean
     public RestHighLevelClient restHighLevelClient() {
-        log.info("host => {}", host);
-        log.info("port => {}", port);
         return new RestHighLevelClient(RestClient.builder(new HttpHost(host, port)));
     }
 }

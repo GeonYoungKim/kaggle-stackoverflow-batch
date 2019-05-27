@@ -1,17 +1,19 @@
 package com.skuniv.cs.geonyeong.kaggle.utils;
 
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import java.util.Properties;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.util.Properties;
-
 public class KafkaProducerFactoryUtil {
+
     private static Properties producerProperties() throws ConfigurationException {
-        String bootstrapServers = YmlUtil.getYmlProps().getProperty("com.skuniv.cs.geonyeong.kaggle.kafka.bootstrapServers");
-        String schemaRegistryUrl = YmlUtil.getYmlProps().getProperty("com.skuniv.cs.geonyeong.kaggle.schema.registry.url");
+        String bootstrapServers = YmlUtil.getYmlProps()
+            .getProperty("com.skuniv.cs.geonyeong.kaggle.kafka.bootstrapServers");
+        String schemaRegistryUrl = YmlUtil.getYmlProps()
+            .getProperty("com.skuniv.cs.geonyeong.kaggle.schema.registry.url");
 
         Properties configProps = new Properties();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
