@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -106,9 +107,9 @@ public class KaggleMigrationPostQuestionJobConfiguration {
             Question question = Question.builder()
                 .id(questionSplit[0])
                 .title(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[1]) ? ""
-                    : questionSplit[1])
+                    : new String(Base64.decodeBase64(questionSplit[1])))
                 .body(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[2]) ? ""
-                    : questionSplit[2])
+                    : new String(Base64.decodeBase64(questionSplit[2])))
                 .answerCount(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[3]) ? 0
                     : Integer.valueOf(questionSplit[3]))
                 .commentCount(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[4]) ? 0

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
@@ -36,7 +37,7 @@ public class BatchSupport {
                     );
                     comment = Comment.builder()
                         .commentId(commentDetailSplit[0])
-                        .body(commentDetailSplit[1])
+                        .body(new String(Base64.decodeBase64(commentDetailSplit[1])))
                         .createDate(TimeUtil.toStr(commentDetailSplit[2]))
                         .postId(commentDetailSplit[3])
                         .score(Integer.valueOf(commentDetailSplit[6]))
@@ -55,8 +56,8 @@ public class BatchSupport {
         String websiteUrl) throws ParseException {
         return Account.builder()
             .id(StringUtils.equals(EMPTY_FIELD_VALUE, id) ? "" : id)
-            .displayName(StringUtils.equals(EMPTY_FIELD_VALUE, name) ? "" : name)
-            .aboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, aboutMe) ? "" : aboutMe)
+            .displayName(StringUtils.equals(EMPTY_FIELD_VALUE, name) ? "" : new String(Base64.decodeBase64(name)))
+            .aboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, aboutMe) ? "" : new String(Base64.decodeBase64(aboutMe)))
             .age(StringUtils.equals(EMPTY_FIELD_VALUE, age) ? "" : age)
             .createDate(
                 StringUtils.equals(EMPTY_FIELD_VALUE, createDate) ? TimeUtil.toStr(new Date())

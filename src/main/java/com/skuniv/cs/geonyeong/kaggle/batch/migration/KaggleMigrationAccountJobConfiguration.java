@@ -10,6 +10,7 @@ import com.skuniv.cs.geonyeong.kaggle.vo.Account;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -87,9 +88,9 @@ public class KaggleMigrationAccountJobConfiguration {
             Account account = Account.builder()
                 .id(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[0]) ? "" : accountSplit[0])
                 .displayName(
-                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[1]) ? "" : accountSplit[1])
+                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[1]) ? "" : new String(Base64.decodeBase64(accountSplit[1])))
                 .aboutMe(
-                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[2]) ? "" : accountSplit[2])
+                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[2]) ? "" : new String(Base64.decodeBase64(accountSplit[2])))
                 .age(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[3]) ? "" : accountSplit[3])
                 .createDate(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[4]) ? TimeUtil
                     .toStr(new Date()) : TimeUtil.toStr(accountSplit[4]))
