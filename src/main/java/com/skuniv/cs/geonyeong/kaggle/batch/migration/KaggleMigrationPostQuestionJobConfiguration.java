@@ -107,9 +107,9 @@ public class KaggleMigrationPostQuestionJobConfiguration {
             Question question = Question.builder()
                 .id(questionSplit[0])
                 .title(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[1]) ? ""
-                    : new String(Base64.decodeBase64(questionSplit[1])))
+                    : new String(Base64.decodeBase64(questionSplit[1].substring(2, questionSplit[1].length()-1))))
                 .body(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[2]) ? ""
-                    : new String(Base64.decodeBase64(questionSplit[2])))
+                    : new String(Base64.decodeBase64(questionSplit[2].substring(2, questionSplit[2].length()-1))))
                 .answerCount(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[3]) ? 0
                     : Integer.valueOf(questionSplit[3]))
                 .commentCount(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, questionSplit[4]) ? 0

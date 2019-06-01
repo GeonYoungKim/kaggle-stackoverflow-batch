@@ -110,7 +110,7 @@ public class KaggleMigrationPostAnswerJobConfiguration extends DefaultBatchConfi
                 .id(answerSplit[0])
                 .body(
                     StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, answerSplit[1]) ? ""
-                        : new String(Base64.decodeBase64(answerSplit[1])))
+                        : new String(Base64.decodeBase64(answerSplit[1].substring(2, answerSplit[1].length()-1))))
                 .commentCount(StringUtils.equals(BatchSupport.EMPTY_FIELD_VALUE, answerSplit[2]) ? 0
                     : Integer.valueOf(answerSplit[2]))
                 .createDate(

@@ -88,9 +88,9 @@ public class KaggleMigrationAccountJobConfiguration {
             Account account = Account.builder()
                 .id(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[0]) ? "" : accountSplit[0])
                 .displayName(
-                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[1]) ? "" : new String(Base64.decodeBase64(accountSplit[1])))
+                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[1]) ? "" : new String(Base64.decodeBase64(accountSplit[1].substring(2, accountSplit[1].length()-1))))
                 .aboutMe(
-                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[2]) ? "" : new String(Base64.decodeBase64(accountSplit[2])))
+                    StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[2]) ? "" : new String(Base64.decodeBase64(accountSplit[2].substring(2, accountSplit[2].length()-1))))
                 .age(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[3]) ? "" : accountSplit[3])
                 .createDate(StringUtils.equals(EMPTY_FIELD_VALUE, accountSplit[4]) ? TimeUtil
                     .toStr(new Date()) : TimeUtil.toStr(accountSplit[4]))

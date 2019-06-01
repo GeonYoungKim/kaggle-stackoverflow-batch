@@ -37,7 +37,7 @@ public class BatchSupport {
                     );
                     comment = Comment.builder()
                         .commentId(commentDetailSplit[0])
-                        .body(new String(Base64.decodeBase64(commentDetailSplit[1])))
+                        .body(new String(Base64.decodeBase64(commentDetailSplit[1].substring(2, commentDetailSplit[1].length()-1))))
                         .createDate(TimeUtil.toStr(commentDetailSplit[2]))
                         .postId(commentDetailSplit[3])
                         .score(Integer.valueOf(commentDetailSplit[6]))
@@ -56,8 +56,8 @@ public class BatchSupport {
         String websiteUrl) throws ParseException {
         return Account.builder()
             .id(StringUtils.equals(EMPTY_FIELD_VALUE, id) ? "" : id)
-            .displayName(StringUtils.equals(EMPTY_FIELD_VALUE, name) ? "" : new String(Base64.decodeBase64(name)))
-            .aboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, aboutMe) ? "" : new String(Base64.decodeBase64(aboutMe)))
+            .displayName(StringUtils.equals(EMPTY_FIELD_VALUE, name) ? "" : new String(Base64.decodeBase64(name.substring(2, name.length()-1))))
+            .aboutMe(StringUtils.equals(EMPTY_FIELD_VALUE, aboutMe) ? "" : new String(Base64.decodeBase64(aboutMe.substring(2, aboutMe.length()-1))))
             .age(StringUtils.equals(EMPTY_FIELD_VALUE, age) ? "" : age)
             .createDate(
                 StringUtils.equals(EMPTY_FIELD_VALUE, createDate) ? TimeUtil.toStr(new Date())
